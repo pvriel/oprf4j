@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Interface representing {@link OPRFProvider} nodes that perform a part of their computations offline.
+ * @param   <ReturnTypeOfflinePhase>
+ *          The type of the intermediate result from the offline phase, that can be used to execute the online phase with.
+ */
 public interface PrecomputedOPRFProvider<ReturnTypeOfflinePhase> extends OPRFProvider  {
 
     @Override
@@ -14,7 +19,36 @@ public interface PrecomputedOPRFProvider<ReturnTypeOfflinePhase> extends OPRFPro
         executeOnlinePhase(resultOfflinePhase, bitLength, inputStream, outputStream);
     }
 
+    /**
+     * Method to execute the offline phase of the OPRF protocol.
+     * @param   bitLength
+     *          The bit length of the element. Should be strictly positive, and should match the value used by the {@link PrecomputedOPRFProvider} node.
+     * @param   inputStream
+     *          The (not-null) input stream to receive data from the {@link PrecomputedOPRFProvider} node.
+     *          <br>This stream will not be closed after executing the protocol.
+     * @param   outputStream
+     *          The (not-null) output stream to send data to the {@link PrecomputedOPRFProvider} node.
+     *          <br>This stream will not be closed after executing the protocol.
+     * @return  An intermediate result, that can be used to execute the online phase of this protocol with.
+     * @throws  IOException
+     *          If an IO-related problem occurred while executing the protocol.
+     */
     ReturnTypeOfflinePhase executeOfflinePhase(int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
 
+    /**
+     * Method to execute the online phase of the OPRF protocol.
+     * @param   resultOfflinePhase
+     *          The result from executing the executeOfflinePhase(...) method.
+     * @param   bitLength
+     *          The bit length of the element. Should be strictly positive, and should match the value used by the {@link PrecomputedOPRFProvider} node.
+     * @param   inputStream
+     *          The (not-null) input stream to receive data from the {@link PrecomputedOPRFProvider} node.
+     *          <br>This stream will not be closed after executing the protocol.
+     * @param   outputStream
+     *          The (not-null) output stream to send data to the {@link PrecomputedOPRFProvider} node.
+     *          <br>This stream will not be closed after executing the protocol.
+     * @throws  IOException
+     *          If an IO-related problem occurred while executing the protocol.
+     */
     void executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
 }
