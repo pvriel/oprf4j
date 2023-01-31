@@ -29,9 +29,9 @@ public class KISS17NROPRFProvider extends NROPRFProvider implements PrecomputedO
      * @param   precomputedObliviousTransferSender
      *          The (not-null) {@link PrecomputedObliviousTransferSender} instance used to perform the oblivious transfer.
      * @param   a0
-     *          The (not-null) keys that are used for the inactive bits.
-     * @param   a1
      *          The (not-null) keys that are used for the active bits.
+     * @param   a1
+     *          The (not-null) keys that are used for the inactive bits.
      * @param   p
      *          The (not-null) modulus of the multiplicative group.
      * @param   q
