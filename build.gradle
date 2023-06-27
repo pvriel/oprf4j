@@ -4,11 +4,19 @@ plugins {
 }
 
 group 'com.github.pvriel'
-version '1.0.1'
+version '1.1.0'
 
 repositories {
     mavenLocal()
     mavenCentral()
+
+    maven {
+        url = uri("https://maven.pkg.github.com/pvriel/mpcutils4j")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
 
     maven {
         url = uri("https://maven.pkg.github.com/pvriel/oblivioustransfer4j")
@@ -28,11 +36,12 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.github.pvriel:mpcutils4j:1.+'
     implementation 'com.github.pvriel:oblivioustransfer4j:1.+'
     implementation 'org.apache.commons:commons-lang3:3.+'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.+'
-    testImplementation 'com.github.pvriel:prf4j:1.1.0'
+    testImplementation 'com.github.pvriel:prf4j:1.+'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.+'
 }
 

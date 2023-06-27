@@ -12,8 +12,11 @@ public interface OPRFProvider {
 
     /**
      * Method to provide the OPRF functionality.
+     * @param   amountOfValues
+     *          The amount of values to apply the PRF to (from the evaluator side).
+     *          This value should match the amount of values provided by the {@link OPRFEvaluator} node.
      * @param   bitLength
-     *          The bit length of the message to apply the PRF to. Should be strictly positive, and should match the value used by the {@link OPRFEvaluator} node.
+     *          The bit length of the messages to apply the PRF to. Should be strictly positive, and should match the value used by the {@link OPRFEvaluator} node.
      * @param   inputStream
      *          The (not-null) input stream to receive data from the {@link OPRFEvaluator} node.
      *          <br>The stream will not be closed after this process.
@@ -23,5 +26,22 @@ public interface OPRFProvider {
      * @throws  IOException
      *          If an IO-related problem occurred during the execution of this process.
      */
-    void execute(int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    void execute(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+
+    /**
+     * Method to provide the OPRF functionality.
+     * @param   bitLength
+     *          The bit length of the messages to apply the PRF to. Should be strictly positive, and should match the value used by the {@link OPRFEvaluator} node.
+     * @param   inputStream
+     *          The (not-null) input stream to receive data from the {@link OPRFEvaluator} node.
+     *          <br>The stream will not be closed after this process.
+     * @param   outputStream
+     *          The (not-null) output stream to send data to the {@link OPRFEvaluator} node.
+     *          <br>The stream will not be closed after this process.
+     * @throws  IOException
+     *          If an IO-related problem occurred during the execution of this process.
+     */
+    default void execute(int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+        execute(1, bitLength, inputStream, outputStream);
+    }
 }

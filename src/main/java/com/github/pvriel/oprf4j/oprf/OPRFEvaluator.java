@@ -13,19 +13,39 @@ public interface OPRFEvaluator {
 
     /**
      * Method to execute the OPRF functionality.
-     * @param   element
-     *          The (not-null) element to apply the PRF to.
+     * @param   elements
+     *          The (not-null) elements to apply the PRF to.
      * @param   bitLength
-     *          The bitlength of the element. Should be strictly positive, and should match the value used by the {@link OPRFProvider} node.
+     *          The bit length of the elements. Should be strictly positive, and should match the value used by the {@link OPRFProvider} node.
      * @param   inputStream
      *          The (not-null) input stream to receive data from the {@link OPRFProvider} node.
      *          <br>This stream will not be closed after this process.
      * @param   outputStream
      *          The (not-null) output stream to send data to the {@link OPRFProvider} node.
      *          <br>This stream will not be closed after this process.
-     * @return  The (not-null) OPRF(element) result.
+     * @return  The (not-null) OPRF (element) results.
      * @throws  IOException
      *          If an IO-related problem occurred during the execution of this process.
      */
-    BigInteger evaluate(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+
+    /**
+     * Method to execute the OPRF functionality.
+     * @param   element
+     *          The (not-null) element to apply the PRF to.
+     * @param   bitLength
+     *          The bit length of the element. Should be strictly positive, and should match the value used by the {@link OPRFProvider} node.
+     * @param   inputStream
+     *          The (not-null) input stream to receive data from the {@link OPRFProvider} node.
+     *          <br>This stream will not be closed after this process.
+     * @param   outputStream
+     *          The (not-null) output stream to send data to the {@link OPRFProvider} node.
+     *          <br>This stream will not be closed after this process.
+     * @return  The (not-null) OPRF (element) result.
+     * @throws  IOException
+     *          If an IO-related problem occurred during the execution of this process.
+     */
+    default BigInteger evaluate(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+        return evaluate(new BigInteger[] {element}, bitLength, inputStream, outputStream)[0];
+    }
 }

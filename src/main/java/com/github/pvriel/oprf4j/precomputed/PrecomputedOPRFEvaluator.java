@@ -15,17 +15,17 @@ import java.math.BigInteger;
 public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEvaluator {
 
     @Override
-    default BigInteger evaluate(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
-        var resultOfflinePhase = executeOfflinePhase(element, bitLength, inputStream, outputStream);
-        return executeOnlinePhase(resultOfflinePhase, element, bitLength, inputStream, outputStream);
+    default BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+        var resultOfflinePhase = executeOfflinePhase(elements, bitLength, inputStream, outputStream);
+        return executeOnlinePhase(resultOfflinePhase, elements, bitLength, inputStream, outputStream);
     }
 
     /**
      * Method to execute the offline phase of the OPRF protocol.
-     * @param   element
-     *          The (not-null) element to apply the PRF to.
+     * @param   elements
+     *          The (not-null) elements to apply the PRF to.
      * @param   bitLength
-     *          The bit length of the element. Should be strictly positive, and should match the value used by the {@link PrecomputedOPRFProvider} node.
+     *          The bit length of the elements. Should be strictly positive, and should match the value used by the {@link PrecomputedOPRFProvider} node.
      * @param   inputStream
      *          The (not-null) input stream to receive data from the {@link PrecomputedOPRFProvider} node.
      *          <br>This stream will not be closed after executing the protocol.
@@ -36,14 +36,14 @@ public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEv
      * @throws  IOException
      *          If an IO-related problem occurred while executing the protocol.
      */
-    ReturnTypeOfflinePhase executeOfflinePhase(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    ReturnTypeOfflinePhase executeOfflinePhase(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
 
     /**
      * Method to execute the online phase of the OPRF protocol.
      * @param   resultOfflinePhase
      *          The result from executing the executeOfflinePhase(...) method.
-     * @param   element
-     *      *          The (not-null) element to apply the PRF to.
+     * @param   elements
+     *      *          The (not-null) elements to apply the PRF to.
      * @param   bitLength
      *          The bit length of the element. Should be strictly positive, and should match the value used by the {@link PrecomputedOPRFProvider} node.
      * @param   inputStream
@@ -52,9 +52,9 @@ public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEv
      * @param   outputStream
      *          The (not-null) output stream to send data to the {@link PrecomputedOPRFProvider} node.
      *          <br>This stream will not be closed after executing the protocol.
-     * @return  The not-null OPRF(element) result.
+     * @return  The not-null OPRF(element) results.
      * @throws  IOException
      *          If an IO-related problem occurred while executing the protocol.
      */
-    BigInteger executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    BigInteger[] executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
 }

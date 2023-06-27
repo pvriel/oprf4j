@@ -4,48 +4,53 @@ import com.github.pvriel.oprf4j.oprf.OPRFEvaluator;
 import com.github.pvriel.oprf4j.oprf.OPRFProvider;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.math.BigInteger;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractOPRFTest {
 
-    protected abstract List<Triple<Pair<Pair<Integer, OPRFProvider>, Pair<Integer, OPRFEvaluator>>, BigInteger, BigInteger>> setup();
+    protected abstract Triple<Integer, Pair<BigInteger[], BigInteger[]>, Pair<OPRFProvider, OPRFEvaluator>> setup();
 
     @Test
+    @DisplayName("Check if the OPRF function works as expected.")
     public void test() throws IOException, InterruptedException {
-        for (var triple : setup()) {
-            var pair = triple.getLeft();
-            var bitLengthProvider = pair.getLeft().getLeft();
-            var provider = pair.getLeft().getRight();
-            var bitLengthEvaluator = pair.getRight().getLeft();
-            var evaluator = pair.getRight().getRight();
-            var input = triple.getMiddle();
-            var expectedOutput = triple.getRight();
+        Triple<Integer, Pair<BigInteger[], BigInteger[]>, Pair<OPRFProvider, OPRFEvaluator>> setup = setup();
+        int bitLength = setup.getLeft();
+        Pair<BigInteger[], BigInteger[]> inputsAndExpectedOutputs = setup.getMiddle();
+        BigInteger[] inputs = inputsAndExpectedOutputs.getLeft();
+        BigInteger[] expectedOutputs = inputsAndExpectedOutputs.getRight();
+        Pair<OPRFProvider, OPRFEvaluator> oprfProviderAndEvaluator = setup.getRight();
+        OPRFProvider oprfProvider = oprfProviderAndEvaluator.getLeft();
+        OPRFEvaluator oprfEvaluator = oprfProviderAndEvaluator.getRight();
 
-            PipedInputStream inOne = new PipedInputStream(10000);
-            PipedInputStream inTwo = new PipedInputStream(10000);
-            PipedOutputStream outOne = new PipedOutputStream(inTwo);
-            PipedOutputStream outTwo = new PipedOutputStream(inOne);
+        PipedInputStream inOne = new PipedInputStream(100_000);
+        PipedOutputStream outTwo = new PipedOutputStream(inOne);
+        PipedInputStream inTwo = new PipedInputStream(100_000);
+        PipedOutputStream outOne = new PipedOutputStream(inTwo);
 
-            Thread providerThread = new Thread(() -> {
-                try {
-                    provider.execute(bitLengthProvider, inOne, outOne);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            providerThread.start();
-            var output = evaluator.evaluate(input, bitLengthEvaluator, inTwo, outTwo);
-            providerThread.join();
+        System.out.println("Starting test with " + inputs.length + " inputs of bit length " + bitLength + "...");
+        Thread providerThread = new Thread(() -> {
+            try {
+                oprfProvider.execute(inputs.length, bitLength, inOne, outOne);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        providerThread.start();
 
-            assertEquals(expectedOutput, output);
+        BigInteger[] outputs = oprfEvaluator.evaluate(inputs, bitLength, inTwo, outTwo);
+        providerThread.join();
+
+        assertEquals(inputs.length, outputs.length);
+        for (int i = 0; i < inputs.length; i++) {
+            assertEquals(expectedOutputs[i], outputs[i]);
         }
     }
 }

@@ -2,7 +2,7 @@
 A Java library for the OPRF functions I programmed during my PhD.
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Coverage](https://badgen.net/badge/coverage/82%25/green)](https://badgen.net/badge/coverage/82%25/green)
+[![Coverage](https://badgen.net/badge/coverage/95%25/green)](https://badgen.net/badge/coverage/95%25/green)
 
 ***
 
