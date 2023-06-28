@@ -33,7 +33,7 @@ public class KALES19NROPRFProvider extends NROPRFProvider implements Precomputed
      * @param ROTSender  The (not-null) {@link RandomObliviousTransferSender} that is used to execute the random oblivious transfer protocol with.
      * @param bitLengthRandomValues The (not-null) bit length of the random values that are used in the random oblivious transfer protocol.
      */
-    protected KALES19NROPRFProvider(BigInteger initialKey, BigInteger[] a0, BigInteger[] a1, BigInteger p, BigInteger q,
+    public KALES19NROPRFProvider(BigInteger initialKey, BigInteger[] a0, BigInteger[] a1, BigInteger p, BigInteger q,
                                     BigInteger g, RandomObliviousTransferSender ROTSender, int bitLengthRandomValues) {
         super(initialKey, a0, null, p, q, g);
         this.ROTSender = ROTSender;

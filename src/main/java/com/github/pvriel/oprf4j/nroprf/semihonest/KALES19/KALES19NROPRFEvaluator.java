@@ -32,7 +32,7 @@ public class KALES19NROPRFEvaluator extends NROPRFEvaluator implements Precomput
      * @param ROTReceiver The (not-null) {@link RandomObliviousTransferReceiver} that is used to receive the random values.
      * @param bitLengthRandomValues The bit length of the random values that are used to apply the PRF.
      */
-    protected KALES19NROPRFEvaluator(BigInteger p, BigInteger q, RandomObliviousTransferReceiver ROTReceiver, int bitLengthRandomValues) {
+    public KALES19NROPRFEvaluator(BigInteger p, BigInteger q, RandomObliviousTransferReceiver ROTReceiver, int bitLengthRandomValues) {
         super(p, q);
         this.ROTReceiver = ROTReceiver;
         this.bitLengthRandomValues = bitLengthRandomValues;
