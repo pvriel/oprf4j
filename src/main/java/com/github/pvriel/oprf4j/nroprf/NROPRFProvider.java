@@ -26,7 +26,7 @@ public abstract class NROPRFProvider implements OPRFProvider {
      * @param   a0
      *          The (not-null) array of keys that are used for the active bits.
      * @param   a1
-     *          The (not-null) array of keys that are used for the inactive bits.
+     *          The array of keys that are used for the inactive bits.
      * @param   p
      *          The (not-null) prime number that is used for the group (the result of applying the PRF is always part of F_{p}).
      * @param   q

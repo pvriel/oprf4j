@@ -2,7 +2,7 @@
 A Java library for the OPRF functions I programmed during my PhD.
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Coverage](https://badgen.net/badge/coverage/95%25/green)](https://badgen.net/badge/coverage/95%25/green)
+[![Coverage](https://badgen.net/badge/coverage/98%25/green)](https://badgen.net/badge/coverage/98%25/green)
 
 ***
 
@@ -13,7 +13,8 @@ We use <a href="https://github.com/pvriel/oprf4j/packages/">GitHub packages</a>.
 ***
 
 ## Implemented OPRF protocols
-Currently, only the <a href="https://www.semanticscholar.org/paper/Private-Set-Intersection-for-Unequal-Set-Sizes-with-Kiss-Liu/ef148d510ce6fd445b73584a238f6244660efbe6">KISS17 NR-OPRF</a> is implemented.
+Currently, only the <a href="https://www.semanticscholar.org/paper/Private-Set-Intersection-for-Unequal-Set-Sizes-with-Kiss-Liu/ef148d510ce6fd445b73584a238f6244660efbe6">KISS17 NR-OPRF</a> is implemented,
+as well as the <a href="https://eprint.iacr.org/2019/517">KALES19 variant</a>.
 
 ***
 
