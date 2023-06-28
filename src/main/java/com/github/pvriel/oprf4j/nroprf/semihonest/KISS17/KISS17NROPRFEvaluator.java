@@ -46,7 +46,9 @@ public class KISS17NROPRFEvaluator extends NROPRFEvaluator implements Precompute
     @Override
     public Triple<boolean[], BigInteger[], Object> executeOfflinePhase(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
         boolean[] choices = new boolean[elements.length * bitLength];
-        for (int i = 0; i < elements.length; i ++) for (int j = 0; j < bitLength; j ++) choices[i * bitLength + j] = elements[i].testBit(j);
+        IntStream.range(0, elements.length).parallel().forEach(i -> {
+            for (int j = 0; j < bitLength; j ++) choices[i * bitLength + j] = elements[i].testBit(j);
+        });
 
         BigInteger[] g_modded = new BigInteger[elements.length];
         for (int i = 0; i < g_modded.length; i ++) g_modded[i] = StreamUtils.readBigIntegerFromInputStream(inputStream);

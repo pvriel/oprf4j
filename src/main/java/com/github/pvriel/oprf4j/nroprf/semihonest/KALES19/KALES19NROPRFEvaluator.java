@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.stream.IntStream;
 
 /**
  * Implementation of the {@link NROPRFEvaluator} class that uses the <a href="https://eprint.iacr.org/2019/517">KALES19 variant</a>.
@@ -40,36 +44,48 @@ public class KALES19NROPRFEvaluator extends NROPRFEvaluator implements Precomput
     }
 
     @Override
-    public BigInteger[] executeOnlinePhase(Pair<boolean[], BigInteger[]> resultOfflinePhase, BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public BigInteger[] executeOnlinePhase(Pair<boolean[], BigInteger[]> resultOfflinePhase, BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException, ExecutionException, InterruptedException {
         boolean[] choices = resultOfflinePhase.getLeft();
         boolean[] b = new boolean[elements.length * bitLength];
-        for (int i = 0; i < elements.length; i ++) {
+        IntStream.range(0, elements.length).parallel().forEach(i -> {
             BigInteger element = elements[i];
             for (int j = 0; j < bitLength; j ++) b[i * bitLength + j] = (choices[i * bitLength + j] != element.testBit(j));
-        }
+        });
         BigInteger bAsBigInteger = ArrayUtils.convertToBigInteger(b);
         StreamUtils.writeBigIntegerToOutputStream(bAsBigInteger, outputStream);
         outputStream.flush();
 
         BigInteger[] r_i_j_c_i_j = resultOfflinePhase.getRight();
-        BigInteger[] R = new BigInteger[elements.length * bitLength];
-        for (int i = 0; i < elements.length; i ++) {
-            BigInteger element = elements[i];
-            for (int j = 0; j < bitLength; j ++) R[i * bitLength + j] = r_i_j_c_i_j[i * bitLength + j].xor((element.testBit(j) ? BigInteger.ONE : BigInteger.ZERO).multiply(StreamUtils.readBigIntegerFromInputStream(inputStream)));
-        }
-
         BigInteger[] C_i = new BigInteger[elements.length];
-        for (int i = 0; i < elements.length; i ++) {
+        BigInteger[] xor_product = new BigInteger[elements.length * bitLength];
+        for (int i = 0; i < xor_product.length; i ++) xor_product[i] = StreamUtils.readBigIntegerFromInputStream(inputStream);
+        ForkJoinTask<BigInteger[]> g_modded_task = ForkJoinPool.commonPool().submit(() -> {
+            BigInteger[] g_modded = new BigInteger[elements.length];
+            for (int i = 0; i < g_modded.length; i ++) {
+                try {
+                    g_modded[i] = StreamUtils.readBigIntegerFromInputStream(inputStream);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return g_modded;
+        });
+        IntStream.range(0, elements.length).parallel().forEach(i -> {
+            BigInteger element = elements[i];
+
+            BigInteger[] R = new BigInteger[bitLength];
+            for (int j = 0; j < bitLength; j ++) R[j] = r_i_j_c_i_j[i * bitLength + j].xor((element.testBit(j) ? BigInteger.ONE : BigInteger.ZERO).multiply(xor_product[i * bitLength + j]));
+
             BigInteger exponent = BigInteger.ONE;
-            for (int j = 0; j < bitLength; j ++) exponent = exponent.multiply(R[i * bitLength + j]);
+            for (int j = 0; j < bitLength; j ++) exponent = exponent.multiply(R[j]);
             C_i[i] = exponent.mod(getQ());
-        }
+        });
 
         BigInteger[] returnValue = new BigInteger[elements.length];
-        for (int i = 0; i < returnValue.length; i ++) {
-            BigInteger g_modded = StreamUtils.readBigIntegerFromInputStream(inputStream);
-            returnValue[i] = g_modded.modPow(C_i[i], getP());
-        }
+        BigInteger[] g_modded = g_modded_task.get();
+        IntStream.range(0, returnValue.length).parallel().forEach(i -> {
+            returnValue[i] = g_modded[i].modPow(C_i[i], getP());
+        });
         return returnValue;
     }
 }

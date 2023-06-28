@@ -15,7 +15,7 @@ import java.math.BigInteger;
 public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEvaluator {
 
     @Override
-    default BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+    default BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception {
         var resultOfflinePhase = executeOfflinePhase(elements, bitLength, inputStream, outputStream);
         return executeOnlinePhase(resultOfflinePhase, elements, bitLength, inputStream, outputStream);
     }
@@ -33,10 +33,10 @@ public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEv
      *          The (not-null) output stream to send data to the {@link PrecomputedOPRFProvider} node.
      *          <br>This stream will not be closed after executing the protocol.
      * @return  An intermediate result, that can be used to execute the online phase of this protocol with.
-     * @throws  IOException
-     *          If an IO-related problem occurred while executing the protocol.
+     * @throws  Exception
+     *          If a problem occurred while executing the protocol.
      */
-    ReturnTypeOfflinePhase executeOfflinePhase(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    ReturnTypeOfflinePhase executeOfflinePhase(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 
     /**
      * Method to execute the online phase of the OPRF protocol.
@@ -54,7 +54,7 @@ public interface PrecomputedOPRFEvaluator<ReturnTypeOfflinePhase> extends OPRFEv
      *          <br>This stream will not be closed after executing the protocol.
      * @return  The not-null OPRF(element) results.
      * @throws  IOException
-     *          If an IO-related problem occurred while executing the protocol.
+     *          If a problem occurred while executing the protocol.
      */
-    BigInteger[] executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    BigInteger[] executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 }

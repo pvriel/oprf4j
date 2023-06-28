@@ -20,7 +20,7 @@ public abstract class AbstractOPRFTest {
 
     @Test
     @DisplayName("Check if the OPRF function works as expected.")
-    public void test() throws IOException, InterruptedException {
+    public void test() throws Exception {
         Triple<Integer, Pair<BigInteger[], BigInteger[]>, Pair<OPRFProvider, OPRFEvaluator>> setup = setup();
         int bitLength = setup.getLeft();
         Pair<BigInteger[], BigInteger[]> inputsAndExpectedOutputs = setup.getMiddle();

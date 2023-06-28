@@ -64,14 +64,16 @@ public class KALES19NROPRFProvider extends NROPRFProvider implements Precomputed
         for (int i = 0; i < xor_product.length; i ++) StreamUtils.writeBigIntegerToOutputStream(xor_product[i], outputStream);
         outputStream.flush();
 
-        // TODO: performance optimization.
-        for (int i = 0; i < amountOfValues; i++) {
+        BigInteger[] g_i = new BigInteger[amountOfValues];
+        IntStream.range(0, amountOfValues).parallel().forEach(i -> {
             BigInteger r_inv = BigInteger.ONE;
             for (int j = 0; j < bitLength; j++) r_inv = r_inv.multiply(r_i_j[i * bitLength + j]);
             r_inv = r_inv.modInverse(getQ());
 
-            BigInteger g_i = getG().modPow(getInitialKey().multiply(r_inv), getP());
-            StreamUtils.writeBigIntegerToOutputStream(g_i, outputStream);
+            g_i[i] = getG().modPow(getInitialKey().multiply(r_inv), getP());
+        });
+        for (int i = 0; i < amountOfValues; i++) {
+            StreamUtils.writeBigIntegerToOutputStream(g_i[i], outputStream);
         }
         outputStream.flush();
     }

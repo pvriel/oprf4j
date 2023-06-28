@@ -23,10 +23,10 @@ public interface OPRFProvider {
      * @param   outputStream
      *          The (not-null) output stream to send data to the {@link OPRFEvaluator} node.
      *          <br>The stream will not be closed after this process.
-     * @throws  IOException
-     *          If an IO-related problem occurred during the execution of this process.
+     * @throws  Exception
+     *          If a problem occurred during the execution of this process.
      */
-    void execute(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    void execute(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 
     /**
      * Method to provide the OPRF functionality.
@@ -38,10 +38,10 @@ public interface OPRFProvider {
      * @param   outputStream
      *          The (not-null) output stream to send data to the {@link OPRFEvaluator} node.
      *          <br>The stream will not be closed after this process.
-     * @throws  IOException
-     *          If an IO-related problem occurred during the execution of this process.
+     * @throws  Exception
+     *          If a problem occurred during the execution of this process.
      */
-    default void execute(int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+    default void execute(int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception {
         execute(1, bitLength, inputStream, outputStream);
     }
 }

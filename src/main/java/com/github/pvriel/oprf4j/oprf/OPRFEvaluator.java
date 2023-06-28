@@ -25,9 +25,9 @@ public interface OPRFEvaluator {
      *          <br>This stream will not be closed after this process.
      * @return  The (not-null) OPRF (element) results.
      * @throws  IOException
-     *          If an IO-related problem occurred during the execution of this process.
+     *          If a problem occurred during the execution of this process.
      */
-    BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    BigInteger[] evaluate(BigInteger[] elements, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 
     /**
      * Method to execute the OPRF functionality.
@@ -43,9 +43,9 @@ public interface OPRFEvaluator {
      *          <br>This stream will not be closed after this process.
      * @return  The (not-null) OPRF (element) result.
      * @throws  IOException
-     *          If an IO-related problem occurred during the execution of this process.
+     *          If a problem occurred during the execution of this process.
      */
-    default BigInteger evaluate(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+    default BigInteger evaluate(BigInteger element, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception {
         return evaluate(new BigInteger[] {element}, bitLength, inputStream, outputStream)[0];
     }
 }

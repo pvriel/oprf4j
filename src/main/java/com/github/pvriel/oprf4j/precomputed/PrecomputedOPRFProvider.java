@@ -14,7 +14,7 @@ import java.io.OutputStream;
 public interface PrecomputedOPRFProvider<ReturnTypeOfflinePhase> extends OPRFProvider  {
 
     @Override
-    default void execute(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException {
+    default void execute(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception {
         var resultOfflinePhase = executeOfflinePhase(amountOfValues, bitLength, inputStream, outputStream);
         executeOnlinePhase(resultOfflinePhase, amountOfValues, bitLength, inputStream, outputStream);
     }
@@ -34,9 +34,9 @@ public interface PrecomputedOPRFProvider<ReturnTypeOfflinePhase> extends OPRFPro
      *          <br>This stream will not be closed after executing the protocol.
      * @return  An intermediate result, that can be used to execute the online phase of this protocol with.
      * @throws  IOException
-     *          If an IO-related problem occurred while executing the protocol.
+     *          If a problem occurred while executing the protocol.
      */
-    ReturnTypeOfflinePhase executeOfflinePhase(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    ReturnTypeOfflinePhase executeOfflinePhase(int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 
     /**
      * Method to execute the online phase of the OPRF protocol.
@@ -53,8 +53,8 @@ public interface PrecomputedOPRFProvider<ReturnTypeOfflinePhase> extends OPRFPro
      * @param   outputStream
      *          The (not-null) output stream to send data to the {@link PrecomputedOPRFProvider} node.
      *          <br>This stream will not be closed after executing the protocol.
-     * @throws  IOException
-     *          If an IO-related problem occurred while executing the protocol.
+     * @throws  Exception
+     *          If a problem occurred while executing the protocol.
      */
-    void executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws IOException;
+    void executeOnlinePhase(ReturnTypeOfflinePhase resultOfflinePhase, int amountOfValues, int bitLength, InputStream inputStream, OutputStream outputStream) throws Exception;
 }
